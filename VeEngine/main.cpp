@@ -1,6 +1,6 @@
 
-#include "Engine/Engine.h"
-#include "Game/Game.h"
+#include "SRC/Engine/Engine.h"
+#include "SRC/Game/Game.h"
 
 int main(int argc, char* argv[])
 {    
