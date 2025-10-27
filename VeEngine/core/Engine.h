@@ -5,7 +5,6 @@
 #include "../../core/Modules/ResourcesManager.h"
 #include "../../core/Modules/SceneTree.h"
 
-
 class Engine
 {
 public:
@@ -26,7 +25,7 @@ public:
     static Engine& Get() { return *s_instance; };
     Engine(const Engine&) = delete;
     Engine& operator=(const Engine&) = delete;
-
+    
     void Setup();
     void Run();
     void Quit();

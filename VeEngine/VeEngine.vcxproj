@@ -1677,6 +1677,8 @@
       <SDLCheck>true</SDLCheck>
       <LinkCompiled>true</LinkCompiled>
     </ClCompile>
+    <ClCompile Include="core\Resource.cpp" />
+    <ClCompile Include="core\SceneManager.cpp" />
     <ClCompile Include="editor\Editor.cpp" />
     <ClCompile Include="Game\Game.cpp">
       <AssemblerOutput>NoListing</AssemblerOutput>
@@ -2705,10 +2707,12 @@
     <ClInclude Include="core\Modules\ResourcesManager.h" />
     <ClInclude Include="core\Modules\SceneTree.h" />
     <ClInclude Include="core\Monitor.h" />
+    <ClInclude Include="core\Resource.h" />
     <ClInclude Include="core\Resources\Animation.h" />
     <ClInclude Include="core\Resources\CollisionShape.h" />
     <ClInclude Include="core\Resources\Sprite.h" />
     <ClInclude Include="core\Resources\SpriteSheet.hpp" />
+    <ClInclude Include="core\SceneManager.h" />
     <ClInclude Include="core\Utils.hpp" />
     <ClInclude Include="editor\Editor.h" />
     <ClInclude Include="Game\Game.h" />

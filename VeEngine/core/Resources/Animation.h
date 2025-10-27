@@ -2,9 +2,11 @@
 #include <vector>
 
 #include "SpriteSheet.hpp"
+#include "../Resource.h"
 
-struct Animation
+class Animation : public Resource
 {
+public:
     Animation(std::vector<int> f, SpriteSheet sp, float duration = 0.5f) : frames(f), sprite(sp), frameDuration(duration) {}
     
     SpriteSheet sprite;

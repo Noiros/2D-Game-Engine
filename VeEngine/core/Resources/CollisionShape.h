@@ -1,6 +1,7 @@
 ﻿#pragma once
+#include "../Resource.h"
 
-struct CollisionShape
+struct CollisionShape : public Resource
 {
     CollisionShape(SDL_Rect r) : collisionShape(r) {}
     

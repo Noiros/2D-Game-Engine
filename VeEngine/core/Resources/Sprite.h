@@ -1,9 +1,10 @@
 ﻿#pragma once
+#include "../Resource.h"
 #include <SDL_render.h>
 #include <string_view>
 #include "../../../core/Modules/ResourcesManager.h"
 
-class Sprite
+class Sprite : public Resource
 {
 public:
     Sprite(std::string_view textureName) : textureName(textureName)

@@ -9,13 +9,13 @@
 class SceneTree
 {
     public:
-        SceneTree() = default;
-        ~SceneTree() = default;
+        SceneTree() {}
+        ~SceneTree() {}
 
         void Render(SDL_Renderer* renderer, glm::vec2 cameraPos, float cameraScale);
         void Update(float deltaTime);
         void ProcessPendingGameObjects();
-
+    
         template<typename T>
         inline T& GetGameObjectByName(std::string_view name)
         {
