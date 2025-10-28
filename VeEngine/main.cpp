@@ -1,7 +1,8 @@
-#define EDITOR
+//#define EDITOR
 
 #include "core/Engine.h"
 #include "editor/Editor.h"
+#include "Game/Game.h"
 #include "runtime/Runtime.h"
 
 int main(int argc, char* argv[])
@@ -15,8 +16,13 @@ int main(int argc, char* argv[])
     editor.Setup(&engine);
     
 #else
-    Runtime game;
-    game.Setup(&engine);
+    //Runtime game;
+    //game.Setup(&engine);
+    
+    Game game;
+    game.Start(&engine);
+
+    
 
 #endif
     engine.Run();

@@ -26,6 +26,7 @@ public:
         components.emplace_back(std::move(uptr));
         compBitset[GetComponentTypeID<T>()] = true;
         compList[GetComponentTypeID<T>()] = comp;
+        comp->Bind();
         comp->Ready();
         return *comp;
     }

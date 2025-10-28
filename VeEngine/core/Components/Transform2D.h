@@ -16,4 +16,5 @@ public:
 
     void Ready() override;
     void Update(float deltaTime) override;
+    void Bind() override;
 };

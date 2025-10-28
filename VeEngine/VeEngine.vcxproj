@@ -2786,6 +2786,7 @@
     <ClInclude Include="core\Modules\ResourcesManager.h" />
     <ClInclude Include="core\Modules\SceneTree.h" />
     <ClInclude Include="core\Monitor.h" />
+    <ClInclude Include="core\Proprety.h" />
     <ClInclude Include="core\Resource.h" />
     <ClInclude Include="core\Resources\Animation.h" />
     <ClInclude Include="core\Resources\CollisionShape.h" />

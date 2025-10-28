@@ -6,6 +6,8 @@
 void CharacterMovement2D::Update(float deltaTime)
 {
     if (transform == nullptr) return;
+
+    glm::vec2 position = transform->GetProperty<glm::vec2>("position");
     
     if (gameObject->HasComponent<Collider2D>())
     {
@@ -13,7 +15,7 @@ void CharacterMovement2D::Update(float deltaTime)
         {
             Collider2D* collider = PhysicsServer::Get().TestMovement(&gameObject->GetComponent<Collider2D>(), velocity * deltaTime);
             if (collider != nullptr) gameObject->HitObject(collider->gameObject);
-            transform->position += velocity * deltaTime;
+            position += velocity * deltaTime;
         }
         else
         {
@@ -21,7 +23,7 @@ void CharacterMovement2D::Update(float deltaTime)
             collider = PhysicsServer::Get().TestMovement(&gameObject->GetComponent<Collider2D>(), glm::vec2(velocity.x, 0) * deltaTime);
             if (collider == nullptr)
             {
-                transform->position.x += velocity.x * deltaTime;
+                position.x += velocity.x * deltaTime;
             }
             else
             {
@@ -30,7 +32,7 @@ void CharacterMovement2D::Update(float deltaTime)
             collider = PhysicsServer::Get().TestMovement(&gameObject->GetComponent<Collider2D>(), glm::vec2(0, velocity.y) * deltaTime);
             if (collider == nullptr)
             {
-                transform->position.y += velocity.y * deltaTime;
+                position.y += velocity.y * deltaTime;
             }
             else
             {
@@ -39,8 +41,10 @@ void CharacterMovement2D::Update(float deltaTime)
         }
     } else
     {
-        transform->position += velocity * deltaTime;
+        position += velocity * deltaTime;
     }
+
+    transform->SetProperty("position", position);
 }
 
 void CharacterMovement2D::Ready()

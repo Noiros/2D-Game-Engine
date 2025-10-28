@@ -6,9 +6,6 @@ public:
     ClassDB();
     ~ClassDB();
     
-    bool isGameObjectRegistered();
-    bool isComponentRegistered();
-    
     static void SetInstance(ClassDB* instance) { s_instance = instance; }
     static ClassDB& Get() { return *s_instance; }
     ClassDB(const ClassDB&) = delete;
