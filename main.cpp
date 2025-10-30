@@ -21,6 +21,7 @@ int main(int argc, char* argv[])
 
 #ifdef EDITOR
     Editor editor;
+    Editor::SetInstance(&editor);
     editor.Setup(&engine);
     
 #else

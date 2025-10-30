@@ -1,7 +1,7 @@
 #include "Game.h"
 #include "../core/Logger.h"
 #include "../core/Monitor.h"
-#include "../core/modules/RenderingServer.h"
+#include "../core/modules/RenderingServer2D.h"
 #include <SDL.h>
 #include "game_objects/Player.h"
 #include "game_objects/Empty.h"

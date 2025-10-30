@@ -3,11 +3,11 @@
 #include <map>
 #include <vector>
 
-class PhysicsServer
+class PhysicsServer2D
 {
 public:    
-    PhysicsServer() {}
-    ~PhysicsServer() {}
+    PhysicsServer2D() {}
+    ~PhysicsServer2D() {}
     
     void AddCollider(Collider2D* collider, int layer = 0);
     void RmCollider(Collider2D* collider);
@@ -19,13 +19,13 @@ public:
 
 
     //Creer le singleton
-    static void SetInstance(PhysicsServer* instance) { s_instance = instance; }
-    static PhysicsServer& Get() { return *s_instance; }
-    PhysicsServer(const PhysicsServer&) = delete;
-    PhysicsServer& operator=(const PhysicsServer&) = delete;
+    static void SetInstance(PhysicsServer2D* instance) { s_instance = instance; }
+    static PhysicsServer2D& Get() { return *s_instance; }
+    PhysicsServer2D(const PhysicsServer2D&) = delete;
+    PhysicsServer2D& operator=(const PhysicsServer2D&) = delete;
 
     
 private:
-    static PhysicsServer* s_instance;
+    static PhysicsServer2D* s_instance;
     std::map<int, std::vector<Collider2D*>> colliders;
 };

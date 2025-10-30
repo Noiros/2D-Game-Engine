@@ -64,6 +64,5 @@ class SceneTree
         std::map<std::string_view, GameObject*> gameObjectByName;
         std::vector<std::unique_ptr<GameObject>> gameObjects;
         std::vector<std::unique_ptr<GameObject>> pendingGameObjects;
-        //std::vector<std::unique_ptr<GameObject>> pendingRemoveGameObjects;
         static SceneTree* s_instance;
 };

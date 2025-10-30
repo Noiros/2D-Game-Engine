@@ -1382,7 +1382,7 @@
       <SDLCheck>true</SDLCheck>
       <LinkCompiled>true</LinkCompiled>
     </ClCompile>
-    <ClCompile Include="core\modules\PhysicsServer.cpp">
+    <ClCompile Include="core\modules\PhysicsServer2D.cpp">
       <AssemblerOutput>NoListing</AssemblerOutput>
       <AssemblerListingLocation>x64\Release\</AssemblerListingLocation>
       <UndefineAllPreprocessorDefinitions>false</UndefineAllPreprocessorDefinitions>
@@ -1459,7 +1459,7 @@
       <SDLCheck>true</SDLCheck>
       <LinkCompiled>true</LinkCompiled>
     </ClCompile>
-    <ClCompile Include="core\modules\RenderingServer.cpp">
+    <ClCompile Include="core\modules\RenderingServer2D.cpp">
       <AssemblerOutput>NoListing</AssemblerOutput>
       <AssemblerListingLocation>x64\Release\</AssemblerListingLocation>
       <UndefineAllPreprocessorDefinitions>false</UndefineAllPreprocessorDefinitions>
@@ -1536,6 +1536,8 @@
       <SDLCheck>true</SDLCheck>
       <LinkCompiled>true</LinkCompiled>
     </ClCompile>
+    <ClCompile Include="core\modules\RenderingServer3D.cpp" />
+    <ClCompile Include="core\modules\RenderingServerUI.cpp" />
     <ClCompile Include="core\modules\ResourcesManager.cpp">
       <AssemblerOutput>NoListing</AssemblerOutput>
       <AssemblerListingLocation>x64\Release\</AssemblerListingLocation>
@@ -1767,9 +1769,12 @@
       <SDLCheck>true</SDLCheck>
       <LinkCompiled>true</LinkCompiled>
     </ClCompile>
+    <ClCompile Include="core\Object.cpp" />
     <ClCompile Include="core\Resource.cpp" />
     <ClCompile Include="core\SceneManager.cpp" />
     <ClCompile Include="editor\Editor.cpp" />
+    <ClCompile Include="editor\EditorInterface.cpp" />
+    <ClCompile Include="editor\panels\EditorViewport.cpp" />
     <ClCompile Include="game\Game.cpp">
       <AssemblerOutput>NoListing</AssemblerOutput>
       <AssemblerListingLocation>x64\Release\</AssemblerListingLocation>
@@ -2800,11 +2805,14 @@
     <ClInclude Include="core\Logger.h" />
     <ClInclude Include="core\modules\ClassDB.h" />
     <ClInclude Include="core\modules\InputManager.h" />
-    <ClInclude Include="core\modules\PhysicsServer.h" />
-    <ClInclude Include="core\modules\RenderingServer.h" />
+    <ClInclude Include="core\modules\PhysicsServer2D.h" />
+    <ClInclude Include="core\modules\RenderingServer2D.h" />
+    <ClInclude Include="core\modules\RenderingServer3D.h" />
+    <ClInclude Include="core\modules\RenderingServerUI.h" />
     <ClInclude Include="core\modules\ResourcesManager.h" />
     <ClInclude Include="core\modules\SceneTree.h" />
     <ClInclude Include="core\Monitor.h" />
+    <ClInclude Include="core\Object.h" />
     <ClInclude Include="core\Proprety.h" />
     <ClInclude Include="core\Resource.h" />
     <ClInclude Include="core\resources\Animation.h" />
@@ -2814,6 +2822,8 @@
     <ClInclude Include="core\SceneManager.h" />
     <ClInclude Include="core\Utils.hpp" />
     <ClInclude Include="editor\Editor.h" />
+    <ClInclude Include="editor\EditorInterface.h" />
+    <ClInclude Include="editor\panels\EditorViewport.h" />
     <ClInclude Include="game\Game.h" />
     <ClInclude Include="game\game_objects\Empty.h" />
     <ClInclude Include="game\game_objects\enemies\BaseEnemy.h" />

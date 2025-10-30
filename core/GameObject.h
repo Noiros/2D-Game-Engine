@@ -7,7 +7,7 @@
 #include "../../core/Component.h"
 #include "components/Transform2D.h"
 
-class GameObject
+class GameObject : public Object
 {
 public:
     GameObject()

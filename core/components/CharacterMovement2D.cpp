@@ -1,5 +1,5 @@
 ﻿#include "CharacterMovement2D.h"
-#include "../modules/PhysicsServer.h"
+#include "../modules/PhysicsServer2D.h"
 #include "Collider2D.h"
 #include "../GameObject.h"
 
@@ -13,14 +13,14 @@ void CharacterMovement2D::Update(float deltaTime)
     {
         if (gameObject->GetComponent<Collider2D>().isTrigger)
         {
-            Collider2D* collider = PhysicsServer::Get().TestMovement(&gameObject->GetComponent<Collider2D>(), velocity * deltaTime);
+            Collider2D* collider = PhysicsServer2D::Get().TestMovement(&gameObject->GetComponent<Collider2D>(), velocity * deltaTime);
             if (collider != nullptr) gameObject->HitObject(collider->gameObject);
             position += velocity * deltaTime;
         }
         else
         {
             Collider2D* collider;
-            collider = PhysicsServer::Get().TestMovement(&gameObject->GetComponent<Collider2D>(), glm::vec2(velocity.x, 0) * deltaTime);
+            collider = PhysicsServer2D::Get().TestMovement(&gameObject->GetComponent<Collider2D>(), glm::vec2(velocity.x, 0) * deltaTime);
             if (collider == nullptr)
             {
                 position.x += velocity.x * deltaTime;
@@ -29,7 +29,7 @@ void CharacterMovement2D::Update(float deltaTime)
             {
                 gameObject->HitObject(collider->gameObject);
             }
-            collider = PhysicsServer::Get().TestMovement(&gameObject->GetComponent<Collider2D>(), glm::vec2(0, velocity.y) * deltaTime);
+            collider = PhysicsServer2D::Get().TestMovement(&gameObject->GetComponent<Collider2D>(), glm::vec2(0, velocity.y) * deltaTime);
             if (collider == nullptr)
             {
                 position.y += velocity.y * deltaTime;

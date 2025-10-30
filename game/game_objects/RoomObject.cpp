@@ -3,7 +3,7 @@
 #include "Enemy.h"
 #include "Player.h"
 #include "../../core/Logger.h"
-#include "../../core/modules/PhysicsServer.h"
+#include "../../core/modules/PhysicsServer2D.h"
 #include "../../core/modules/SceneTree.h"
 #include "../../core/components/ColliderTileMap2D.h"
 #include "../../core/components/TileMap2D.h"
@@ -18,7 +18,7 @@ void RoomObject::Ready()
 void RoomObject::Update(float deltaTime)
 {
     GameObject::Update(deltaTime);
-    std::vector<Collider2D*> bodies = PhysicsServer::Get().GetOverloppingBodies(triggerArea, 0);
+    std::vector<Collider2D*> bodies = PhysicsServer2D::Get().GetOverloppingBodies(triggerArea, 0);
 
     bool isPlayerInRoom = false;
     bool isEnemiesStillAlive = false;
@@ -48,7 +48,7 @@ void RoomObject::Activate()
 {
     Logger::Log("Room activated");
 
-    std::vector<Collider2D*> bodies = PhysicsServer::Get().GetOverloppingBodies(triggerArea, 0);
+    std::vector<Collider2D*> bodies = PhysicsServer2D::Get().GetOverloppingBodies(triggerArea, 0);
     
     for (Collider2D* body : bodies)
     {
@@ -68,7 +68,7 @@ void RoomObject::Deactivate()
 {
     Logger::Log("Room deactivated");
 
-    std::vector<Collider2D*> bodies = PhysicsServer::Get().GetOverloppingBodies(triggerArea, 0);
+    std::vector<Collider2D*> bodies = PhysicsServer2D::Get().GetOverloppingBodies(triggerArea, 0);
     
     for (Collider2D* body : bodies)
     {

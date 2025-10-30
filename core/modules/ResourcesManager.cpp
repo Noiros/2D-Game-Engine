@@ -2,7 +2,7 @@
 #include "../Logger.h"
 #include <SDL_image.h>
 
-#include "RenderingServer.h"
+#include "RenderingServer2D.h"
 
 ResourcesManager* ResourcesManager::s_instance = nullptr;
 
@@ -28,7 +28,7 @@ void ResourcesManager::ClearAssets()
 
 void ResourcesManager::AddTexture(std::string_view fileName)
 {
-    SDL_Texture* texture = IMG_LoadTexture(RenderingServer::Get().GetRenderer(), fileName.data());
+    SDL_Texture* texture = IMG_LoadTexture(RenderingServer2D::Get().GetRenderer(), fileName.data());
     if (texture)
     {
         textures.emplace(fileName, texture);
@@ -41,7 +41,7 @@ SDL_Texture* ResourcesManager::GetTexture(std::string_view fileName)
 {
     if (!textures.contains(fileName))
     {
-        SDL_Texture* texture = IMG_LoadTexture(RenderingServer::Get().GetRenderer(), fileName.data());
+        SDL_Texture* texture = IMG_LoadTexture(RenderingServer2D::Get().GetRenderer(), fileName.data());
         textures.emplace(fileName, texture);
     }
     return textures.at(fileName);

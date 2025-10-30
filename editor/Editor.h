@@ -1,11 +1,16 @@
 ﻿#pragma once
 #include "../core/Engine.h"
 #include <SDL_render.h>
+#include "panels/EditorViewport.h"
 
 class Editor
 {
 public:
-    void Setup(Engine* _engine) { engine = _engine; s_instance = this; }
+    void Setup(Engine* _engine) {
+        engine = _engine;
+        s_instance = this;
+        viewport.Setup(_engine);
+    }
 
     static void SetInstance(Editor* instance) { s_instance = instance; }
     static Editor& Get() { return *s_instance; }
@@ -18,10 +23,6 @@ public:
 private:
     Engine* engine = nullptr;
 
-    // Viewport resources (only used when EDITOR is defined)
-    SDL_Texture* m_viewportTexture = nullptr;
-    int m_viewportWidth = 0;
-    int m_viewportHeight = 0;
-
-    void EnsureViewportTexture(int width, int height);
+    // Panels
+    EditorViewport viewport;
 };

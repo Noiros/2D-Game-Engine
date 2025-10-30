@@ -6,10 +6,11 @@
 #include <string_view>
 #include "./Proprety.h"
 #include "Logger.h"
+#include "Object.h"
 
 class GameObject;
 
-class Component
+class Component : public Object
 {
 public:
     Component() = default;

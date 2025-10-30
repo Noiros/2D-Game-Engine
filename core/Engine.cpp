@@ -3,8 +3,9 @@
 
 #include <Windows.h>
 
+#include "modules/RenderingServerUI.h"
+
 #ifdef EDITOR
-#include <backends/imgui_impl_sdl2.h>
 #include "../editor/Editor.h"
 #endif
 
@@ -28,10 +29,13 @@ void Engine::Setup()
     
     SceneTree::SetInstance(&sceneTree);
     InputManager::SetInstance(&inputManager);
-    RenderingServer::SetInstance(&renderingServer);
     ResourcesManager::SetInstance(&resourcesManager);
-    PhysicsServer::SetInstance(&physicsServer);
+    RenderingServer2D::SetInstance(&renderingServer2D);
+    RenderingServerUI::SetInstance(&renderingServerUI);
+    PhysicsServer2D::SetInstance(&physicsServer2D);
 
+    renderingServerUI.Initialize(renderingServer2D.window, renderingServer2D.renderer);
+    
     isRunning = true;
     Logger::Log("Engine setup done !");
 }
@@ -46,14 +50,13 @@ void Engine::Run()
 
 void Engine::Quit()
 {
-    // Shutdown editor/renderer resources before destroying SDL objects
-    renderingServer.ShutdownImGui();
 #ifdef EDITOR
     Editor::Get().ShutdownEditorResources();
+    renderingServerUI.Shutdown();
 #endif
 
-    SDL_DestroyRenderer(renderingServer.renderer);
-    SDL_DestroyWindow(renderingServer.window);
+    SDL_DestroyRenderer(renderingServer2D.renderer);
+    SDL_DestroyWindow(renderingServer2D.window);
     SDL_Quit();
     Logger::Log("SDL closed !");
 }
@@ -66,13 +69,10 @@ void Engine::Update()
         SDL_Delay(timeToWait); //yield to other processes
 #endif // CAP_FPS
 
-    // Poll SDL events first and pass them to ImGui
     SDL_Event sdlEvent;
     while (SDL_PollEvent(&sdlEvent))
     {
-#ifdef EDITOR
-        ImGui_ImplSDL2_ProcessEvent(&sdlEvent);
-#endif
+        renderingServerUI.ProcessEvent(sdlEvent);
         switch (sdlEvent.type)
         {
         case SDL_QUIT: isRunning = false;
@@ -87,14 +87,17 @@ void Engine::Update()
     float deltaTime = (SDL_GetTicks64() - millisecondPreviousFrame) / 1000.0f;
     millisecondPreviousFrame = SDL_GetTicks64();
 
-    renderingServer.Clear();
+    renderingServer2D.Clear();
 
     uint64_t startUpdateMillis = SDL_GetTicks64();
     sceneTree.Update(deltaTime);
     millisUpdateFrame = SDL_GetTicks64() - startUpdateMillis;
 
     uint64_t startRenderMillis = SDL_GetTicks64();
-    renderingServer.Render();
+    
+    renderingServer2D.Render();
+    renderingServerUI.Render();
+    
     millisRenderFrame = SDL_GetTicks64() - startRenderMillis;
 
     millisFrame = SDL_GetTicks64() - millisecondPreviousFrame;

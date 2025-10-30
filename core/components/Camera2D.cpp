@@ -3,12 +3,12 @@
 #include <cmath>
 
 #include "Transform2D.h"
-#include "../modules/RenderingServer.h"
+#include "../modules/RenderingServer2D.h"
 #include "../GameObject.h"
 
 void Camera2D::SetCurrent()
 {
-    RenderingServer::Get().camera = this;
+    RenderingServer2D::Get().camera = this;
 }
 
 void Camera2D::Ready()

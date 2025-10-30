@@ -1,15 +1,15 @@
-﻿#include "PhysicsServer.h"
+﻿#include "PhysicsServer2D.h"
 
 #include "../GameObject.h"
 
-PhysicsServer* PhysicsServer::s_instance = nullptr;
+PhysicsServer2D* PhysicsServer2D::s_instance = nullptr;
 
-void PhysicsServer::AddCollider(Collider2D* collider, int layer)
+void PhysicsServer2D::AddCollider(Collider2D* collider, int layer)
 {
     colliders[layer].push_back(collider);
 }
 
-void PhysicsServer::RmCollider(Collider2D* collider)
+void PhysicsServer2D::RmCollider(Collider2D* collider)
 {
     for (auto it = colliders.begin(); it != colliders.end(); ++it)
     {
@@ -24,7 +24,7 @@ void PhysicsServer::RmCollider(Collider2D* collider)
     }
 }
 
-Collider2D* PhysicsServer::TestMovement(Collider2D* collider, glm::vec2 movement)
+Collider2D* PhysicsServer2D::TestMovement(Collider2D* collider, glm::vec2 movement)
 {
     SDL_Rect destAABB = collider->collisionShape.collisionShape;
     destAABB.x += int(movement.x + collider->gameObject->transform->position.x);
@@ -42,7 +42,7 @@ Collider2D* PhysicsServer::TestMovement(Collider2D* collider, glm::vec2 movement
     return nullptr;
 }
 
-std::vector<Collider2D*> PhysicsServer::GetOverloppingBodies(Collider2D* collider, int layer)
+std::vector<Collider2D*> PhysicsServer2D::GetOverloppingBodies(Collider2D* collider, int layer)
 {
     std::vector<Collider2D*> bodies;
     
@@ -64,12 +64,12 @@ std::vector<Collider2D*> PhysicsServer::GetOverloppingBodies(Collider2D* collide
     return bodies;
 }
 
-bool PhysicsServer::IsColliding(Collider2D* obj1, Collider2D* obj2)
+bool PhysicsServer2D::IsColliding(Collider2D* obj1, Collider2D* obj2)
 {
     return true;
 }
 
-bool PhysicsServer::IsCollidingAABB(SDL_Rect obj1, SDL_Rect obj2)
+bool PhysicsServer2D::IsCollidingAABB(SDL_Rect obj1, SDL_Rect obj2)
 {
     if (obj1.x < obj2.x + obj2.w &&
         obj1.x + obj1.w > obj2.x &&

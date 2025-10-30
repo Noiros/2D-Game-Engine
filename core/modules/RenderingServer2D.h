@@ -8,28 +8,26 @@
 #include "../components/Camera2D.h"
 
 
-class RenderingServer
+class RenderingServer2D
 {
     public:
-        RenderingServer();
-        ~RenderingServer();
+        RenderingServer2D();
+        ~RenderingServer2D();
     
-        static void SetInstance(RenderingServer* instance) { s_instance = instance; }
-        static RenderingServer& Get() { return *s_instance; }
-        RenderingServer(const RenderingServer&) = delete;
-        RenderingServer& operator=(const RenderingServer&) = delete;
+        static void SetInstance(RenderingServer2D* instance) { s_instance = instance; }
+        static RenderingServer2D& Get() { return *s_instance; }
+        RenderingServer2D(const RenderingServer2D&) = delete;
+        RenderingServer2D& operator=(const RenderingServer2D&) = delete;
 
         SDL_Renderer* GetRenderer() const { return renderer; }
         void Render();
         void Clear();
-        void ShutdownImGui();
 
         SDL_Window* window = nullptr;
         SDL_Renderer* renderer = nullptr;
         Camera2D* camera;
 
     private:
-        static RenderingServer* s_instance;
+        static RenderingServer2D* s_instance;
         std::vector<Component*> orderedComponents;
-        bool m_imguiInitialized = false;
 };
