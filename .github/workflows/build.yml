@@ -1,92 +1,11 @@
-﻿name: CI - Build VeEngine
+﻿name: 🔗 GHA - Build Engine
+on: [push, pull_request, merge_group]
 
-on:
-  push:
-    branches: [ "**" ]
-  pull_request:
-    branches: [ "**" ]
+concurrency:
+  group: ${{ github.workflow }}|${{ github.ref_name }}
+  cancel-in-progress: true
 
 jobs:
-  build-ubuntu:
-    name: Build on Ubuntu (${{ matrix.config }})
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        config: [Debug, Release]
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          submodules: recursive
-
-      - name: Install dependencies (SDL2, image, mixer, ttf, build tools)
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y --no-install-recommends \
-            build-essential pkg-config \
-            libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev \
-            libfreetype6-dev
-
-      - name: Build (g++ ${{ matrix.config }})
-        shell: bash
-        run: |
-          set -euo pipefail
-          CONFIG="${{ matrix.config }}"
-          OUTDIR="build/linux/${CONFIG}"
-          mkdir -p "$OUTDIR"
-
-          # Compiler flags per configuration
-          if [[ "$CONFIG" == "Debug" ]]; then
-            CXXFLAGS="-std=c++17 -g -O0"
-          else
-            CXXFLAGS="-std=c++17 -O2 -DNDEBUG"
-          fi
-
-          # SDL2 flags
-          CFLAGS_SDL="$(pkg-config --cflags sdl2 SDL2_image SDL2_mixer SDL2_ttf)"
-          LIBS_SDL="$(pkg-config --libs sdl2 SDL2_image SDL2_mixer SDL2_ttf)"
-
-          # Include paths for third-party headers
-          INCLUDES="-Ithirdparty/imgui -Ithirdparty/imgui/backends -Ithirdparty/glm"
-
-          # ImGui source files (core + SDL2/SDL_Renderer backends)
-          IMGUI_SRCS=(
-            thirdparty/imgui/imgui.cpp
-            thirdparty/imgui/imgui_draw.cpp
-            thirdparty/imgui/imgui_tables.cpp
-            thirdparty/imgui/imgui_widgets.cpp
-            thirdparty/imgui/imgui_demo.cpp
-            thirdparty/imgui/backends/imgui_impl_sdl2.cpp
-            thirdparty/imgui/backends/imgui_impl_sdlrenderer2.cpp
-          )
-
-          # Project sources (engine, editor, game, modules, runtime) + main
-          mapfile -t ENGINE_SRCS < <(find core editor game modules runtime -type f -name '*.cpp' | sort)
-
-          echo "Compiling with: g++ $CXXFLAGS $CFLAGS_SDL $INCLUDES"
-          g++ $CXXFLAGS $CFLAGS_SDL $INCLUDES \
-            "${IMGUI_SRCS[@]}" \
-            "${ENGINE_SRCS[@]}" \
-            main.cpp \
-            -o "$OUTDIR/VeEngine" $LIBS_SDL
-
-          # Minimal run folder structure for artifact
-          mkdir -p artifacts/${CONFIG}
-          cp "$OUTDIR/VeEngine" "artifacts/${CONFIG}/VeEngine"
-          # Include assets if present
-          if [[ -d Assets ]]; then
-            cp -R Assets "artifacts/${CONFIG}/Assets"
-          fi
-          # Include optional runtime config files
-          if [[ -f imgui.ini ]]; then
-            cp imgui.ini "artifacts/${CONFIG}/"
-          fi
-
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: VeEngine-${{ matrix.config }}-ubuntu
-          path: artifacts/${{ matrix.config }}
-          if-no-files-found: warn
+  linux-build:
+    name: Windows - Editor
+    uses: ./.github/workflows/editor.yml
