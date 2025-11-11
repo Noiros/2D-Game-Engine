@@ -1,0 +1,63 @@
+﻿name: CI - Build VeEngine
+
+on:
+  push:
+    branches: [ "**" ]
+  pull_request:
+    branches: [ "**" ]
+
+jobs:
+  build-windows:
+    name: Build on Windows (${{ matrix.config }})
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        config: [Debug, Release]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Restore NuGet packages (if any)
+        shell: pwsh
+        run: |
+          if (Test-Path "VeEngine.sln") {
+            nuget restore "VeEngine.sln" | Out-Host
+          }
+
+      - name: Build Solution (x64 ${{ matrix.config }})
+        shell: pwsh
+        run: |
+          msbuild "VeEngine.sln" /m /p:Configuration=${{ matrix.config }} /p:Platform=x64 /t:Build
+
+      - name: Collect build artifacts
+        if: always()
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path artifacts | Out-Null
+          # Common Visual Studio output paths
+          if (Test-Path "x64/${{ matrix.config }}") {
+            New-Item -ItemType Directory -Force -Path "artifacts/x64" | Out-Null
+            Copy-Item -Recurse -Force "x64/${{ matrix.config }}" "artifacts/x64/${{ matrix.config }}"
+          }
+          if (Test-Path "bin/x64/${{ matrix.config }}") {
+            New-Item -ItemType Directory -Force -Path "artifacts/bin/x64" | Out-Null
+            Copy-Item -Recurse -Force "bin/x64/${{ matrix.config }}" "artifacts/bin/x64/${{ matrix.config }}"
+          }
+          # Also include root-level DLLs if present (SDL2, etc.)
+          Get-ChildItem -Path . -Filter *.dll -File -ErrorAction SilentlyContinue | ForEach-Object {
+            Copy-Item -Force $_.FullName "artifacts/$_"
+          }
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: VeEngine-${{ matrix.config }}-windows
+          path: artifacts
+          if-no-files-found: warn
