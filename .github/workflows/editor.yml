@@ -17,7 +17,7 @@ on:
 jobs:
   win64-on-ubuntu:
     name: Windows x64 Release (Ubuntu runner)
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
 
     env:
       # Toolchain MinGW-w64 x64
