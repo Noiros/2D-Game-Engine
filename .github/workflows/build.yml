@@ -7,9 +7,9 @@ on:
     branches: [ "**" ]
 
 jobs:
-  build-windows:
-    name: Build on Windows (${{ matrix.config }})
-    runs-on: windows-latest
+  build-ubuntu:
+    name: Build on Ubuntu (${{ matrix.config }})
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
@@ -21,43 +21,72 @@ jobs:
         with:
           submodules: recursive
 
-      - name: Setup MSBuild
-        uses: microsoft/setup-msbuild@v2
-
-      - name: Restore NuGet packages (if any)
-        shell: pwsh
+      - name: Install dependencies (SDL2, image, mixer, ttf, build tools)
         run: |
-          if (Test-Path "VeEngine.sln") {
-            nuget restore "VeEngine.sln" | Out-Host
-          }
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            build-essential pkg-config \
+            libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev \
+            libfreetype6-dev
 
-      - name: Build Solution (x64 ${{ matrix.config }})
-        shell: pwsh
+      - name: Build (g++ ${{ matrix.config }})
+        shell: bash
         run: |
-          msbuild "VeEngine.sln" /m /p:Configuration=${{ matrix.config }} /p:Platform=x64 /t:Build
+          set -euo pipefail
+          CONFIG="${{ matrix.config }}"
+          OUTDIR="build/linux/${CONFIG}"
+          mkdir -p "$OUTDIR"
 
-      - name: Collect build artifacts
-        if: always()
-        shell: pwsh
-        run: |
-          New-Item -ItemType Directory -Force -Path artifacts | Out-Null
-          # Common Visual Studio output paths
-          if (Test-Path "x64/${{ matrix.config }}") {
-            New-Item -ItemType Directory -Force -Path "artifacts/x64" | Out-Null
-            Copy-Item -Recurse -Force "x64/${{ matrix.config }}" "artifacts/x64/${{ matrix.config }}"
-          }
-          if (Test-Path "bin/x64/${{ matrix.config }}") {
-            New-Item -ItemType Directory -Force -Path "artifacts/bin/x64" | Out-Null
-            Copy-Item -Recurse -Force "bin/x64/${{ matrix.config }}" "artifacts/bin/x64/${{ matrix.config }}"
-          }
-          # Also include root-level DLLs if present (SDL2, etc.)
-          Get-ChildItem -Path . -Filter *.dll -File -ErrorAction SilentlyContinue | ForEach-Object {
-            Copy-Item -Force $_.FullName "artifacts/$_"
-          }
+          # Compiler flags per configuration
+          if [[ "$CONFIG" == "Debug" ]]; then
+            CXXFLAGS="-std=c++17 -g -O0"
+          else
+            CXXFLAGS="-std=c++17 -O2 -DNDEBUG"
+          fi
+
+          # SDL2 flags
+          CFLAGS_SDL="$(pkg-config --cflags sdl2 SDL2_image SDL2_mixer SDL2_ttf)"
+          LIBS_SDL="$(pkg-config --libs sdl2 SDL2_image SDL2_mixer SDL2_ttf)"
+
+          # Include paths for third-party headers
+          INCLUDES="-Ithirdparty/imgui -Ithirdparty/imgui/backends -Ithirdparty/glm"
+
+          # ImGui source files (core + SDL2/SDL_Renderer backends)
+          IMGUI_SRCS=(
+            thirdparty/imgui/imgui.cpp
+            thirdparty/imgui/imgui_draw.cpp
+            thirdparty/imgui/imgui_tables.cpp
+            thirdparty/imgui/imgui_widgets.cpp
+            thirdparty/imgui/imgui_demo.cpp
+            thirdparty/imgui/backends/imgui_impl_sdl2.cpp
+            thirdparty/imgui/backends/imgui_impl_sdlrenderer2.cpp
+          )
+
+          # Project sources (engine, editor, game, modules, runtime) + main
+          mapfile -t ENGINE_SRCS < <(find core editor game modules runtime -type f -name '*.cpp' | sort)
+
+          echo "Compiling with: g++ $CXXFLAGS $CFLAGS_SDL $INCLUDES"
+          g++ $CXXFLAGS $CFLAGS_SDL $INCLUDES \
+            "${IMGUI_SRCS[@]}" \
+            "${ENGINE_SRCS[@]}" \
+            main.cpp \
+            -o "$OUTDIR/VeEngine" $LIBS_SDL
+
+          # Minimal run folder structure for artifact
+          mkdir -p artifacts/${CONFIG}
+          cp "$OUTDIR/VeEngine" "artifacts/${CONFIG}/VeEngine"
+          # Include assets if present
+          if [[ -d Assets ]]; then
+            cp -R Assets "artifacts/${CONFIG}/Assets"
+          fi
+          # Include optional runtime config files
+          if [[ -f imgui.ini ]]; then
+            cp imgui.ini "artifacts/${CONFIG}/"
+          fi
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: VeEngine-${{ matrix.config }}-windows
-          path: artifacts
+          name: VeEngine-${{ matrix.config }}-ubuntu
+          path: artifacts/${{ matrix.config }}
           if-no-files-found: warn
