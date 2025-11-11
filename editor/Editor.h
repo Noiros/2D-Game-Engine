@@ -6,22 +6,17 @@
 class Editor
 {
 public:
-    void Setup(Engine* _engine) {
-        engine = _engine;
-        s_instance = this;
-        viewport.Setup(_engine);
-    }
-
+    Editor();
+    
     static void SetInstance(Editor* instance) { s_instance = instance; }
     static Editor& Get() { return *s_instance; }
 
-    void RenderUI();
-    void ShutdownEditorResources();
-    
-    static Editor* s_instance;
 
 private:
+    static Editor* s_instance;
     Engine* engine = nullptr;
+
+    RenderingServer* rendering_server = nullptr;
 
     // Panels
     EditorViewport viewport;

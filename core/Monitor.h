@@ -1,15 +1,15 @@
 ﻿#pragma once
 #include "Engine.h"
 #include "GameObject.h"
-#include "components/LabelUI.h"
+//#include "components/LabelUI.h"
 
 class Monitor : public GameObject
 {
 public:
-    LabelUI* fpsLabel;
-    LabelUI* UpdateMSLabel;
-    LabelUI* renderMSLabel;
-    LabelUI* msLabel;
+    //LabelUI* fpsLabel;
+    //LabelUI* UpdateMSLabel;
+    //LabelUI* renderMSLabel;
+    //LabelUI* msLabel;
 
     float updateRate = 1.0f;
     float currentTime = 0.0f;

@@ -1,16 +1,17 @@
 ﻿#include "Editor.h"
-#include <imgui.h>
-#include <SDL_render.h>
-#include "../game/Game.h"
+
+#include "imgui.h"
+#include "imgui_impl_sdl2.h"
 
 Editor* Editor::s_instance = nullptr;
 
-void Editor::ShutdownEditorResources()
+Editor::Editor()
 {
-    viewport.Shutdown();
-}
+    rendering_server = &RenderingServer::Get();
+    
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGui::StyleColorsDark();
 
-void Editor::RenderUI()
-{
-    viewport.RenderUI();
+    ImGui_ImplSDL2_InitForOpenGL(rendering_server->window, rendering_server->gl_context);
 }

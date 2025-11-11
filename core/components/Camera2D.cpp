@@ -8,7 +8,7 @@
 
 void Camera2D::SetCurrent()
 {
-    RenderingServer2D::Get().camera = this;
+    //RenderingServer2D::Get().camera = this;
 }
 
 void Camera2D::Ready()

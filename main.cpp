@@ -1,8 +1,6 @@
 #define EDITOR
 
-#include "imgui.h"
 #include "core/Engine.h"
-#include "game/Game.h"
 
 #ifdef EDITOR
     #include "editor/Editor.h"
@@ -16,13 +14,9 @@ int main(int argc, char* argv[])
     Engine::SetInstance(&engine);
     engine.Setup();
 
-    Game game;
-    game.Start(&engine);
-
 #ifdef EDITOR
     Editor editor;
     Editor::SetInstance(&editor);
-    editor.Setup(&engine);
     
 #else
     //Runtime game;

@@ -2,7 +2,8 @@
 #include "modules/InputManager.h"
 #include "modules/PhysicsServer2D.h"
 #include "modules/RenderingServer2D.h"
-#include "modules/RenderingServerUI.h"
+#include "modules/RenderingServer3D.h"
+#include "modules/RenderingServer.h"
 #include "modules/ResourcesManager.h"
 #include "modules/SceneTree.h"
 
@@ -10,8 +11,9 @@ class Engine
 {
 public:
     PhysicsServer2D physicsServer2D;
+    RenderingServer3D renderingServer3D;
     RenderingServer2D renderingServer2D;
-    RenderingServerUI renderingServerUI;
+    RenderingServer renderingServer;
     ResourcesManager resourcesManager;
     InputManager inputManager;
     SceneTree sceneTree;
