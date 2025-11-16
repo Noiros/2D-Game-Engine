@@ -1,76 +1,31 @@
-name: Editor Build (Windows x64 from Ubuntu)
+name: Editor Build
 
 on:
   workflow_call:
-    inputs:
-      build_dir:
-        description: CMake build directory
-        required: false
-        default: build-windows
-        type: string
-      target:
-        description: CMake target (optionnel)
-        required: false
-        default: ''
-        type: string
 
 jobs:
-  win64-on-ubuntu:
-    name: Windows x64 Release (Ubuntu runner)
-    runs-on: ubuntu-latest
-
+  windows:
     env:
-      # Toolchain MinGW-w64 x64
-      CC: x86_64-w64-mingw32-gcc
-      CXX: x86_64-w64-mingw32-g++
-      RC: x86_64-w64-mingw32-windres
-      # Dossier build (paramétrable)
-      BUILD_DIR: ${{ inputs.build_dir }}
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Install MinGW-w64 and tools
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y mingw-w64 cmake ninja-build make zip
-
-      # Si vous utilisez vcpkg pour les libs, décommentez et adaptez:
-      # - name: Setup vcpkg (optional)
-      #   uses: lukka/run-vcpkg@v11
-      #   with:
-      #     vcpkgGitCommitId: 6e8e1e1b2a5b3a0... # épinglez un commit
-
-      - name: Configure (CMake -> MinGW, Windows target)
-        run: |
-          cmake -S . -B "$BUILD_DIR" \
-            -G "Ninja" \
-            -DCMAKE_BUILD_TYPE=Release \
-            -DCMAKE_SYSTEM_NAME=Windows \
-            -DCMAKE_C_COMPILER=$CC \
-            -DCMAKE_CXX_COMPILER=$CXX \
-            -DCMAKE_RC_COMPILER=$RC
-            # Ajoutez ici des -D pour vos deps, ex: -DSDL2_DIR=... ou -DCMAKE_TOOLCHAIN_FILE=... (vcpkg)
-
-      - name: Build (Release)
-        run: |
-          cmake --build "$BUILD_DIR" --config Release -- -v
-          # ou: cmake --build "$BUILD_DIR" --config Release -j 4
-
-      - name: Package artifact (zip)
-        run: |
-          mkdir -p dist
-          # Adaptez le chemin du binaire/sortie selon votre projet
-          # Exemples possibles: .exe, .dll, assets, shaders, etc.
-          if [ -f "$BUILD_DIR/Editor.exe" ]; then cp "$BUILD_DIR/Editor.exe" dist/; fi
-          if [ -d "$BUILD_DIR/bin" ]; then cp -r "$BUILD_DIR/bin" dist/bin; fi
-          if [ -d assets ]; then cp -r assets dist/assets; fi
-          (cd dist && zip -r ../editor-windows-x64-release.zip .)
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: editor-windows-x64-release
-          path: editor-windows-x64-release.zip
-          if-no-files-found: error
+      SOLUTION_FILE_PATH: .
+      BUILD_CONFIGURATION: Release
+    
+    permissions:
+      contents: read
+    
+    jobs:
+      build:
+        runs-on: windows-latest
+    
+        steps:
+          - uses: actions/checkout@v4
+    
+          - name: Add MSBuild to PATH
+            uses: microsoft/setup-msbuild@v1.0.2
+    
+          - name: Restore NuGet packages
+            working-directory: ${{env.GITHUB_WORKSPACE}}
+            run: nuget restore ${{env.SOLUTION_FILE_PATH}}
+    
+          - name: Build
+            working-directory: ${{env.GITHUB_WORKSPACE}}
+            run: msbuild /m /p:Configuration=${{env.BUILD_CONFIGURATION}} ${{env.SOLUTION_FILE_PATH}}
