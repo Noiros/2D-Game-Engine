@@ -1,31 +1,127 @@
-name: Editor Build
+﻿name: Reusable - Build Windows (x64) from Ubuntu
 
 on:
   workflow_call:
+    inputs:
+      configuration:
+        description: Build configuration (Debug/Release)
+        required: false
+        default: Release
+        type: string
 
 jobs:
-  windows:
-    env:
-      SOLUTION_FILE_PATH: .
-      BUILD_CONFIGURATION: Release
-    
-    permissions:
-      contents: read
-    
-    jobs:
-      build:
-        runs-on: windows-latest
-    
-        steps:
-          - uses: actions/checkout@v4
-    
-          - name: Add MSBuild to PATH
-            uses: microsoft/setup-msbuild@v1.0.2
-    
-          - name: Restore NuGet packages
-            working-directory: ${{env.GITHUB_WORKSPACE}}
-            run: nuget restore ${{env.SOLUTION_FILE_PATH}}
-    
-          - name: Build
-            working-directory: ${{env.GITHUB_WORKSPACE}}
-            run: msbuild /m /p:Configuration=${{env.BUILD_CONFIGURATION}} ${{env.SOLUTION_FILE_PATH}}
+  build-windows-x64:
+    name: Build (Ubuntu → Windows x64)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install MinGW-w64 toolchain and utils
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            mingw-w64 \
+            p7zip-full \
+            unzip \
+            curl
+
+      - name: Download SDL2 (MinGW) dev packages (x64)
+        run: |
+          set -e
+          mkdir -p $GITHUB_WORKSPACE/_deps
+          cd $GITHUB_WORKSPACE/_deps
+
+          # SDL2 core
+          curl -L -o sdl2.zip https://github.com/libsdl-org/SDL/releases/download/release-2.30.9/SDL2-devel-2.30.9-mingw.zip
+          unzip -q sdl2.zip
+
+          # SDL2_image
+          curl -L -o sdl2_image.zip https://github.com/libsdl-org/SDL_image/releases/download/release-2.8.2/SDL2_image-devel-2.8.2-mingw.zip
+          unzip -q sdl2_image.zip
+
+          # SDL2_ttf
+          curl -L -o sdl2_ttf.zip https://github.com/libsdl-org/SDL_ttf/releases/download/release-2.22.0/SDL2_ttf-devel-2.22.0-mingw.zip
+          unzip -q sdl2_ttf.zip
+
+          # SDL2_mixer
+          curl -L -o sdl2_mixer.zip https://github.com/libsdl-org/SDL_mixer/releases/download/release-2.8.0/SDL2_mixer-devel-2.8.0-mingw.zip
+          unzip -q sdl2_mixer.zip
+
+      - name: Build (cross-compile to Windows x64)
+        env:
+          CFG: ${{ inputs.configuration }}
+        run: |
+          set -e
+          MINGW_PREFIX=x86_64-w64-mingw32
+          CXX=${MINGW_PREFIX}-g++
+
+          # Resolve SDL2 x64 paths from downloaded zips
+          DEPS_DIR="$GITHUB_WORKSPACE/_deps"
+          SDL2_ROOT=$(find "$DEPS_DIR" -maxdepth 1 -type d -name 'SDL2-*' | head -n1)
+          SDL2I_ROOT=$(find "$DEPS_DIR" -maxdepth 1 -type d -name 'SDL2_image-*' | head -n1)
+          SDL2T_ROOT=$(find "$DEPS_DIR" -maxdepth 1 -type d -name 'SDL2_ttf-*' | head -n1)
+          SDL2M_ROOT=$(find "$DEPS_DIR" -maxdepth 1 -type d -name 'SDL2_mixer-*' | head -n1)
+
+          INC_FLAGS="\
+            -I. \
+            -Icore \
+            -Ieditor \
+            -Imodules \
+            -Iruntime \
+            -Ithirdparty/imgui \
+            -Ithirdparty/imgui/backends \
+            -Ithirdparty/glm \
+            -Ithirdparty/sdl/includes \
+            -I${SDL2_ROOT}/x86_64-w64-mingw32/include/SDL2 \
+            -I${SDL2I_ROOT}/x86_64-w64-mingw32/include/SDL2 \
+            -I${SDL2T_ROOT}/x86_64-w64-mingw32/include/SDL2 \
+            -I${SDL2M_ROOT}/x86_64-w64-mingw32/include/SDL2"
+
+          LIB_FLAGS="\
+            -L${SDL2_ROOT}/x86_64-w64-mingw32/lib \
+            -L${SDL2I_ROOT}/x86_64-w64-mingw32/lib \
+            -L${SDL2T_ROOT}/x86_64-w64-mingw32/lib \
+            -L${SDL2M_ROOT}/x86_64-w64-mingw32/lib"
+
+          LINKS="-lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer -limm32 -lversion -lole32 -loleaut32 -lsetupapi -lwinmm -lws2_32 -lshlwapi"
+
+          CXXFLAGS="-std=c++20 -O2 -pipe -Wall -Wextra -Wno-unknown-pragmas -static-libgcc -static-libstdc++ -DUNICODE -D_UNICODE -D${CFG} -DEDITOR"
+
+          # Collect project sources
+          SRC_LIST="$(find core -name '*.cpp' -print) \
+          $(find editor -name '*.cpp' -print) \
+          $(find modules -name '*.cpp' -print) \
+          $(find runtime -name '*.cpp' -print) \
+          thirdparty/imgui/imgui.cpp \
+          thirdparty/imgui/imgui_demo.cpp \
+          thirdparty/imgui/imgui_draw.cpp \
+          thirdparty/imgui/imgui_tables.cpp \
+          thirdparty/imgui/imgui_widgets.cpp \
+          thirdparty/imgui/backends/imgui_impl_sdl2.cpp \
+          thirdparty/imgui/backends/imgui_impl_sdlrenderer2.cpp \
+          main.cpp"
+
+          # Output directory
+          OUT_DIR=build-win64
+          mkdir -p "$OUT_DIR"
+
+          # Build executable
+          ${CXX} ${CXXFLAGS} ${INC_FLAGS} ${SRC_LIST} ${LIB_FLAGS} ${LINKS} -o ${OUT_DIR}/VeEngine-Editor-x64.exe
+
+          # Copy required SDL2 DLLs for runtime (from MinGW packages)
+          mkdir -p ${OUT_DIR}/bin
+          cp -n ${SDL2_ROOT}/x86_64-w64-mingw32/bin/*.dll ${OUT_DIR}/bin/ || true
+          cp -n ${SDL2I_ROOT}/x86_64-w64-mingw32/bin/*.dll ${OUT_DIR}/bin/ || true
+          cp -n ${SDL2T_ROOT}/x86_64-w64-mingw32/bin/*.dll ${OUT_DIR}/bin/ || true
+          cp -n ${SDL2M_ROOT}/x86_64-w64-mingw32/bin/*.dll ${OUT_DIR}/bin/ || true
+          # Also copy the built exe to bin for convenience
+          cp ${OUT_DIR}/VeEngine-Editor-x64.exe ${OUT_DIR}/bin/
+
+      - name: Upload artifact (Windows x64 Editor)
+        uses: actions/upload-artifact@v4
+        with:
+          name: VeEngine-windows-x64-${{ inputs.configuration }}
+          path: |
+            build-win64/bin/**
+            !**/*.pdb
