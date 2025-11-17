@@ -1,12 +1,13 @@
-﻿#pragma once
-#include "../core/Engine.h"
+﻿//
+// Created by noiro on 17-11-25.
+//
 
-class Runtime
-{
-public:
-    void Setup(Engine* _engine) { engine = _engine; }
+#ifndef GAMEENGINE_RUNTIME_H
+#define GAMEENGINE_RUNTIME_H
 
-private:
-    Engine* engine;
-    
+
+class Runtime {
 };
+
+
+#endif //GAMEENGINE_RUNTIME_H
