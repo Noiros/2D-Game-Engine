@@ -1,8 +1,7 @@
-﻿#include "Engine.h"
+﻿#pragma once
 
 class Editor {
 public:
-    Editor();
-
-    Engine* engine;
+    // Point d'entrée de l'éditeur (appelé par main de l'exécutable Editor)
+    static int EntryPoint();
 };

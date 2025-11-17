@@ -1,13 +1,8 @@
-﻿//
-// Created by noiro on 17-11-25.
-//
-
-#ifndef GAMEENGINE_RUNTIME_H
-#define GAMEENGINE_RUNTIME_H
-
+﻿#pragma once
 
 class Runtime {
+public:
+    // Point d'entrée du runtime (appelé par main de l'exécutable Runtime)
+    static int EntryPoint();
 };
 
-
-#endif //GAMEENGINE_RUNTIME_H

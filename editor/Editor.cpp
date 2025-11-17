@@ -1,9 +1,13 @@
 ﻿#include "Editor.h"
+#include "Engine.h"
 #include "utils/Logger.h"
 
-Editor::Editor() {
-    Logger::Log("Initialize Editor ...");
-    engine = &Engine::Get();
+int main(int argc, char *argv[]) {
+    Logger::Log("Editor started");
 
-    engine->test();
+    auto* engine = new Engine();
+    Engine::SetInstance(engine);
+    Engine::Get().Initialize();
+
+    return 0;
 }

@@ -1,6 +1,17 @@
-﻿class Engine {
+﻿#pragma once
+#include <vector>
+#include "modules/Window.h"
+
+class Engine {
 public:
-    void test();
+    Engine() = default;
+    ~Engine() = default;
+
+    void Initialize();
+    void Run();
+    void Update();
+
+    std::vector<Window> windows;
 
     static void SetInstance(Engine* instance) { s_instance = instance; };
     static Engine& Get() { return *s_instance; };
