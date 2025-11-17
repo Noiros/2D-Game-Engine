@@ -1,11 +1,7 @@
 ﻿name: Build Editor (Windows via MinGW)
 
 on:
-  push:
-    branches: [ main, master ]
-  pull_request:
-    branches: [ main, master ]
-  workflow_dispatch: {}
+  workflow_call:
 
 jobs:
   build-editor:

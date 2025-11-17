@@ -1,0 +1,14 @@
+﻿name: 🔗 GHA - Build Engine
+on: [push, pull_request, merge_group]
+
+concurrency:
+  group: ${{ github.workflow }}|${{ github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  windows-editor:
+    name: Windows - Editor
+    uses: ./.github/workflows/build-editor.yml
+  windows-runtime:
+    name: Windows - Runtime
+    uses: ./.github/workflows/build-runtime.yml
