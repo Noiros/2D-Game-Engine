@@ -1,6 +1,5 @@
 ﻿#pragma once
 #include "../core/Engine.h"
-#include <SDL_render.h>
 #include "panels/EditorViewport.h"
 
 class Editor

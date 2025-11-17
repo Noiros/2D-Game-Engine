@@ -1,6 +1,6 @@
 #pragma once
 
-#include <SDL.h>
+#include <SDL3/SDL.h>
 #include <unordered_map>
 #include <set>
 
@@ -13,7 +13,7 @@ public:
     ~InputManager();
 
     void BindKey(Action action, SDL_Scancode key);
-    void BindButton(Action action, SDL_GameControllerButton button);
+    void BindButton(Action action, SDL_GamepadButton button);
     void ProcessInput();
     bool IsActionHeld(Action action);
     bool IsActionPressed(Action action);
@@ -34,8 +34,8 @@ private:
     static InputManager* s_instance;
 
     std::unordered_map<Action, SDL_Scancode> keyBindings;
-    std::unordered_map<Action, SDL_GameControllerButton> buttonBindings;
-    SDL_GameController* gameController = nullptr;
+    std::unordered_map<Action, SDL_GamepadButton> buttonBindings;
+    SDL_Gamepad* gameController = nullptr;
 
     std::set<SDL_Scancode> heldKeys;
     std::set<SDL_Scancode> pressedKeys;

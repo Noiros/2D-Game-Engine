@@ -7,7 +7,7 @@
 #define ANSI_COLOR_GREEN "\x1B[32m"
 #define ANSI_RESET "\033[0m"
 
-enum class LogType : uint8_t { info, warning, error, critical };
+enum class LogType : int { info, warning, error, critical };
 
 struct LogEntry
 {

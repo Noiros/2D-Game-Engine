@@ -1,4 +1,4 @@
-﻿#include <vec2.hpp>
+﻿#include <glm/vec2.hpp>
 #include "Sprite.h"
 #include "../Utils.hpp"
 

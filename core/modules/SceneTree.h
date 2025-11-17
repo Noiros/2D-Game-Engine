@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include <functional>
 #include <memory>
-#include <SDL_render.h>
+#include <SDL3/SDL_render.h>
 #include <vector>
 #include <map>
 #include "../GameObject.h"
@@ -9,8 +9,8 @@
 class SceneTree
 {
     public:
-        SceneTree() {}
-        ~SceneTree() {}
+        SceneTree() = default;
+        ~SceneTree() = default;
 
         void Render(SDL_Renderer* renderer, glm::vec2 cameraPos, float cameraScale);
         void Update(float deltaTime);

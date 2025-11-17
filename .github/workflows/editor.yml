@@ -54,7 +54,8 @@ jobs:
         run: |
           set -e
           MINGW_PREFIX=x86_64-w64-mingw32
-          CXX=${MINGW_PREFIX}-g++
+          # Use the POSIX threads variant to provide std::thread/condition_variable via winpthreads
+          CXX=${MINGW_PREFIX}-g++-posix
 
           # Resolve SDL2 x64 paths from downloaded zips
           DEPS_DIR="$GITHUB_WORKSPACE/_deps"
@@ -86,7 +87,7 @@ jobs:
 
           LINKS="-lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer -limm32 -lversion -lole32 -loleaut32 -lsetupapi -lwinmm -lws2_32 -lshlwapi"
 
-          CXXFLAGS="-std=c++20 -O2 -pipe -Wall -Wextra -Wno-unknown-pragmas -static-libgcc -static-libstdc++ -DUNICODE -D_UNICODE -D${CFG} -DEDITOR"
+          CXXFLAGS="-std=c++20 -O2 -pipe -Wall -Wextra -Wno-unknown-pragmas -static-libgcc -static-libstdc++ -pthread -DUNICODE -D_UNICODE -D${CFG} -DEDITOR"
 
           # Collect project sources
           SRC_LIST="$(find core -name '*.cpp' -print) \
@@ -115,6 +116,9 @@ jobs:
           cp -n ${SDL2I_ROOT}/x86_64-w64-mingw32/bin/*.dll ${OUT_DIR}/bin/ || true
           cp -n ${SDL2T_ROOT}/x86_64-w64-mingw32/bin/*.dll ${OUT_DIR}/bin/ || true
           cp -n ${SDL2M_ROOT}/x86_64-w64-mingw32/bin/*.dll ${OUT_DIR}/bin/ || true
+          # Ensure winpthreads runtime is present (required by -posix toolchain)
+          PTHREAD_DLL=$(${CXX} -print-file-name=libwinpthread-1.dll)
+          if [ -f "$PTHREAD_DLL" ]; then cp -n "$PTHREAD_DLL" ${OUT_DIR}/bin/; fi
           # Also copy the built exe to bin for convenience
           cp ${OUT_DIR}/VeEngine-Editor-x64.exe ${OUT_DIR}/bin/
 

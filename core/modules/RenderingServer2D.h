@@ -1,14 +1,14 @@
 ﻿#pragma once
 
-#include <SDL_render.h>
+#include <SDL3/SDL_render.h>
 
 #include "RenderingServer.h"
 
 class RenderingServer2D
 {
 public:
-    RenderingServer2D() {};
-    ~RenderingServer2D() {};
+    RenderingServer2D() = default;
+    ~RenderingServer2D() = default;
     
     // Setup Singleton
     static void SetInstance(RenderingServer2D* instance) { s_instance = instance; }

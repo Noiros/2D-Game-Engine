@@ -1,12 +1,8 @@
 #define EDITOR
 
 #include "core/Engine.h"
-
-#ifdef EDITOR
-    #include "editor/Editor.h"
-#else
-    #include "runtime/Runtime.h"
-#endif
+#include "editor/Editor.h"
+#include "runtime/Runtime.h"
 
 int main(int argc, char* argv[])
 {
@@ -17,13 +13,13 @@ int main(int argc, char* argv[])
 #ifdef EDITOR
     Editor editor;
     Editor::SetInstance(&editor);
-    
+
 #else
     //Runtime game;
     //game.Setup(&engine);
-    
 
-    
+
+
 
 #endif
     engine.Run();

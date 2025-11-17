@@ -2,4 +2,6 @@
 
 #include "../Component.h"
 
-class Component2D : public Component {};
+class Component2D : public Component {
+
+};

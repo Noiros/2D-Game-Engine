@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-#include <SDL_render.h>
+#include <SDL3/SDL_render.h>
 #include "../resources/Sprite.h"
 
 #include "Component2D.h"

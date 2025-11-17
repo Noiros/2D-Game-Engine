@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include <functional>
-#include <SDL_render.h>
-#include <glm.hpp>
+#include <SDL3/SDL_render.h>
+#include <glm/glm.hpp>
 #include <map>
 #include <string_view>
 #include "./Proprety.h"

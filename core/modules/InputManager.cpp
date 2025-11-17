@@ -6,18 +6,11 @@ InputManager* InputManager::s_instance = nullptr;
 InputManager::InputManager()
 {
     Logger::Log("Input constructor called.");
-
-    if (SDL_NumJoysticks() > 0 && SDL_IsGameController(0))
-    {
-        gameController = SDL_GameControllerOpen(0);
-        Logger::Log("Game controller found.");
-    }
 }
 
 InputManager::~InputManager()
 {
-    if (gameController) SDL_GameControllerClose(gameController);
-    Logger::Log("Input destructor called.");
+
 }
 
 void InputManager::BindKey(Action action, SDL_Scancode key)
@@ -25,7 +18,7 @@ void InputManager::BindKey(Action action, SDL_Scancode key)
     keyBindings[action] = key;
 }
 
-void InputManager::BindButton(Action action, SDL_GameControllerButton button)
+void InputManager::BindButton(Action action, SDL_GamepadButton button)
 {
     buttonBindings[action] = button;
 }

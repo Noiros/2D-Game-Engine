@@ -18,8 +18,8 @@ public:
     InputManager inputManager;
     SceneTree sceneTree;
 
-    Engine();
-    ~Engine();
+    Engine() {};
+    ~Engine() {};
     
     uint64_t millisFrame = 0;
     uint64_t millisUpdateFrame = 0;

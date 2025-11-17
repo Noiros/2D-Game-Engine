@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-#include <vec2.hpp>
+#include <glm/vec2.hpp>
 #include "Component2D.h"
 
 class Transform2D : public Component2D

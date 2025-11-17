@@ -1,7 +1,6 @@
 ﻿#include "Editor.h"
 
 #include "imgui.h"
-#include "imgui_impl_sdl2.h"
 
 Editor* Editor::s_instance = nullptr;
 
@@ -13,5 +12,5 @@ Editor::Editor()
     ImGui::CreateContext();
     ImGui::StyleColorsDark();
 
-    ImGui_ImplSDL2_InitForOpenGL(rendering_server->window, rendering_server->gl_context);
+    //ImGui_ImplSDL2_InitForOpenGL(rendering_server->window, rendering_server->gl_context);
 }

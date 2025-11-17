@@ -1,6 +1,6 @@
 ﻿#pragma once
 #include "../Resource.h"
-#include <SDL_render.h>
+#include <SDL3/SDL_render.h>
 #include <string_view>
 #include "../modules/ResourcesManager.h"
 

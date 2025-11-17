@@ -1,11 +1,11 @@
 ﻿#pragma once
-#include <SDL.h>
+#include <SDL3/SDL.h>
 
 class RenderingServer
 {
 public:
     RenderingServer();
-    ~RenderingServer() {};
+    ~RenderingServer() = default;
     
     // Setup Singleton
     static void SetInstance(RenderingServer* instance) { s_instance = instance; }

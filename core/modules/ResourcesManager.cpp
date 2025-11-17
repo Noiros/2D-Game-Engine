@@ -1,6 +1,5 @@
 #include "ResourcesManager.h"
 #include "../Logger.h"
-#include <SDL_image.h>
 
 #include "RenderingServer2D.h"
 

@@ -1,8 +1,8 @@
 #ifndef UTILS_HPP
 #define UTILS_HPP
 
-#include <glm.hpp>
-#include <SDL.h>
+#include <glm/glm.hpp>
+#include <SDL3/SDL.h>
 #include <random>
 
 class Utils

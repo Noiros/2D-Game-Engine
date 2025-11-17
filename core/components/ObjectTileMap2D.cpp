@@ -1,7 +1,7 @@
 ﻿#include "ObjectTileMap2D.h"
 #include <fstream>
 #include <sstream>
-#include <glm.hpp>
+#include <glm/glm.hpp>
 #include "../Logger.h"
 
 void ObjectTileMap2D::Ready()

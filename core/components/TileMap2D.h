@@ -1,8 +1,10 @@
 #pragma once
 #include <vector>
 #include <string>
-#include <SDL.h>
-#include "../../game/Game.h"
+#include <SDL3/SDL.h>
+
+#include "Transform2D.h"
+#include "Component2D.h"
 
 class TileMap2D : public Component2D
 {
