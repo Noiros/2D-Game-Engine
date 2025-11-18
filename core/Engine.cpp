@@ -1,5 +1,6 @@
 ﻿#include "Engine.h"
 #include "utils/Logger.h"
+#include "GameObject.h"
 #include <SDL3/SDL.h>
 
 Engine* Engine::s_instance = nullptr;
@@ -14,8 +15,12 @@ void Engine::Initialize(MainApp* main_app) {
         return;
     }
 
+    Logger::Log("Creating Window");
     Window mainWindow = Window();
     windows.push_back(mainWindow);
+
+    Logger::Log("Initializing Scene Tree");
+    SceneTree::SetInstance(&sceneTree);
 
     Run();
 }
@@ -42,5 +47,12 @@ void Engine::Run() {
 
 void Engine::MainLoop() {
     mainApp->Update();
-    Logger::Log("Updating Engine");
+
+    for (GameObject* gameObject : sceneTree.gameObjectList) {
+        gameObject->Update(0.0f);
+    }
+
+    for (Component* component : sceneTree.componentList) {
+        component->Update(0.0f);
+    }
 }

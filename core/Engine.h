@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "MainApp.h"
+#include "modules/SceneTree.h"
 #include "modules/Window.h"
 
 class Engine {
@@ -16,9 +17,7 @@ public:
     void MainLoop();
 
     Window* GetMainWindow() { return &windows[0]; }
-
-    MainApp* mainApp;
-    std::vector<Window> windows;
+    Window* GetWindow(int windowIDX) { return &windows[windowIDX]; }
 
     static void SetInstance(Engine* instance) { s_instance = instance; };
     static Engine& Get() { return *s_instance; };
@@ -27,5 +26,9 @@ public:
 
 private:
     static Engine* s_instance;
+
+    MainApp* mainApp;
+    std::vector<Window> windows;
+    SceneTree sceneTree;
 };
 

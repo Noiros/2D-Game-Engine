@@ -1,5 +1,7 @@
 ﻿#include "Runtime.h"
 #include "Engine.h"
+#include "GameObject.h"
+#include "components/Sprite2D.h"
 #include "utils/Logger.h"
 
 Runtime::Runtime() {
@@ -10,9 +12,10 @@ Runtime::Runtime() {
 
 void Runtime::Ready() {
     Logger::Log("Runtime Ready");
+    GameObject* test = SceneTree::Get().CreateGameObject("TestGameObject");
+    test->AddComponent<Sprite2D>();
 }
 
 void Runtime::Update() {
-    Logger::Log("Runtime Update");
 
 }
