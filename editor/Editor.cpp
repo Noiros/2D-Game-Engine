@@ -1,13 +1,23 @@
 ﻿#include "Editor.h"
+
 #include "Engine.h"
 #include "utils/Logger.h"
 
-int main(int argc, char *argv[]) {
-    Logger::Log("Editor started");
-
+Editor::Editor() {
     auto* engine = new Engine();
     Engine::SetInstance(engine);
-    Engine::Get().Initialize();
+    engine->Initialize(this);
+}
 
-    return 0;
+void Editor::Ready() {
+    Logger::Log("Editor Ready");
+
+    editorInterface = EditorInterface();
+    editorInterface.InitializeInterface();
+}
+
+void Editor::Update() {
+    Logger::Log("Editor Update");
+    editorInterface.Update();
+
 }

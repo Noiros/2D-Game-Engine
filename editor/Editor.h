@@ -1,7 +1,12 @@
 ﻿#pragma once
+#include "MainApp.h"
+#include "modules/EditorInterface.h"
 
-class Editor {
+class Editor : public MainApp {
 public:
-    // Point d'entrée de l'éditeur (appelé par main de l'exécutable Editor)
-    static int EntryPoint();
+    Editor();
+    void Ready() override;
+    void Update() override;
+
+    EditorInterface editorInterface;
 };

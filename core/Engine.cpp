@@ -4,10 +4,12 @@
 
 Engine* Engine::s_instance = nullptr;
 
-void Engine::Initialize() {
+void Engine::Initialize(MainApp* main_app) {
     Logger::Log("Initializing Engine");
 
-    if (SDL_Init(SDL_INIT_VIDEO) != 0) {
+    mainApp = main_app;
+
+    if (!SDL_Init(SDL_INIT_VIDEO)) {
         Logger::Err(std::string("SDL_Init failed: ") + SDL_GetError());
         return;
     }
@@ -21,6 +23,8 @@ void Engine::Initialize() {
 void Engine::Run() {
     Logger::Log("Running Engine");
 
+    mainApp->Ready();
+
     bool running = true;
     while (running) {
         SDL_Event e;
@@ -30,12 +34,13 @@ void Engine::Run() {
             }
         }
 
-        Update();
+        MainLoop();
     }
 
     SDL_Quit();
 }
 
-void Engine::Update() {
+void Engine::MainLoop() {
+    mainApp->Update();
     Logger::Log("Updating Engine");
 }

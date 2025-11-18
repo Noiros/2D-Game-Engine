@@ -7,4 +7,5 @@ class Window {
 
     SDL_Window* window = nullptr;
     SDL_Renderer* renderer = nullptr;
+    SDL_GLContext gl_context;
 };
