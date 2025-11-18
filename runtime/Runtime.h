@@ -1,6 +1,9 @@
 ﻿#pragma once
+#include "MainApp.h"
 
 class Runtime : public MainApp {
-    void Initialize();
+public:
+    Runtime();
+    void Ready() override;
+    void Update() override;
 };
-

@@ -1,11 +1,9 @@
 cmake_minimum_required(VERSION 3.20)
 project(GameEngine)
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "bin/$<CONFIGURATION>")
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "bin/$<CONFIGURATION>")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "$<CONFIGURATION>")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "$<CONFIGURATION>")
 set(CMAKE_CXX_STANDARD 20)
-option(EDITOR "Build editor" ON)
-
 
 file(GLOB_RECURSE ENGINE_SOURCES
         core/*.cpp
@@ -29,24 +27,25 @@ target_link_libraries(Engine PUBLIC SDL3::SDL3)
 add_subdirectory(thirdparty/imgui)
 target_link_libraries(Engine PUBLIC ImGui::imgui)
 
+file(GLOB_RECURSE EDITOR_SOURCES
+        editor/modules/*.cpp
+        editor/modules/*.h
+)
+add_executable(Editor editor/main.cpp editor/Editor.cpp ${EDITOR_SOURCES})
+target_include_directories(Editor PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/editor)
+target_link_libraries(Editor PRIVATE Engine)
 
-if(EDITOR)
-    file(GLOB_RECURSE EDITOR_SOURCES
-            editor/modules/*.cpp
-            editor/modules/*.h
-    )
-    add_executable(Editor editor/main.cpp editor/Editor.cpp ${EDITOR_SOURCES})
-    target_include_directories(Editor PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/editor)
-    target_link_libraries(Editor PRIVATE Engine)
-else ()
-    add_executable(Runtime runtime/main.cpp runtime/Runtime.cpp)
-    target_include_directories(Runtime PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/runtime)
-    target_link_libraries(Runtime PRIVATE Engine)
-endif ()
 
+add_executable(Runtime runtime/main.cpp runtime/Runtime.cpp)
+target_include_directories(Runtime PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/runtime)
+target_link_libraries(Runtime PRIVATE Engine)
 
 add_custom_command(TARGET Editor POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
         $<TARGET_FILE:SDL3::SDL3>
-        $<TARGET_FILE_DIR:Editor>
-)
+        $<TARGET_FILE_DIR:Editor>)
+
+add_custom_command(TARGET Runtime POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        $<TARGET_FILE:SDL3::SDL3>
+        $<TARGET_FILE_DIR:Runtime>)

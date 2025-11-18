@@ -1,5 +1,7 @@
 ﻿#include "SceneTree.h"
 
+#include <algorithm>
+
 SceneTree* SceneTree::s_instance = nullptr;
 
 void SceneTree::Render(SDL_Renderer* renderer, glm::vec2 cameraPos, float cameraScale)
