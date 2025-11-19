@@ -1,7 +1,13 @@
 ﻿#include "Engine.h"
+
+#include <iostream>
+
 #include "utils/Logger.h"
 #include "GameObject.h"
 #include <SDL3/SDL.h>
+
+#include "EventType.h"
+#include "modules/Event.h"
 
 Engine* Engine::s_instance = nullptr;
 
@@ -26,6 +32,8 @@ void Engine::Initialize(MainApp* main_app) {
     rendering_server_2d.Initialize();
     Logger::Log("Initializing Rendering Server 3D");
     RenderingServer3D::SetInstance(&rendering_server_3d);
+    Logger::Log("Initializing Event");
+    Event::SetInstance(&event);
 
     Run();
 }
@@ -39,9 +47,8 @@ void Engine::Run() {
     while (running) {
         SDL_Event e;
         while (SDL_PollEvent(&e)) {
-            if (e.type == SDL_EVENT_QUIT) {
-                running = false;
-            }
+            Event::Get().Publish(InputEvent{ e });
+            if (e.type == SDL_EVENT_QUIT) running = false;
         }
 
         MainLoop();
@@ -61,5 +68,6 @@ void Engine::MainLoop() {
         component->Update(0.0f);
     }
 
-    rendering_server_2d.Render();
+    //rendering_server_2d.Render();
+
 }

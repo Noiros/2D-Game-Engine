@@ -30,6 +30,8 @@ target_link_libraries(Engine PUBLIC ImGui::imgui)
 file(GLOB_RECURSE EDITOR_SOURCES
         editor/modules/*.cpp
         editor/modules/*.h
+        editor/interfaces/*.cpp
+        editor/interfaces/*.h
 )
 add_executable(Editor editor/main.cpp editor/Editor.cpp ${EDITOR_SOURCES})
 target_include_directories(Editor PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/editor)

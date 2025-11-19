@@ -12,11 +12,10 @@ Editor::Editor() {
 void Editor::Ready() {
     Logger::Log("Editor Ready");
 
-    editorInterface = EditorInterface();
+    editorInterface = InterfaceBackend();
     editorInterface.InitializeInterface();
 }
 
 void Editor::Update() {
-    Logger::Log("Editor Update");
     editorInterface.Update();
 }

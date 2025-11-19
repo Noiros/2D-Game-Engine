@@ -1,6 +1,6 @@
 ﻿#pragma once
 #include "MainApp.h"
-#include "modules/EditorInterface.h"
+#include "modules/InterfaceBackend.h"
 
 class Editor : public MainApp {
 public:
@@ -8,5 +8,5 @@ public:
     void Ready() override;
     void Update() override;
 
-    EditorInterface editorInterface;
+    InterfaceBackend editorInterface;
 };

@@ -3,6 +3,7 @@
 #include <vector>
 
 #include "MainApp.h"
+#include "modules/Event.h"
 #include "modules/RenderingServer2D.h"
 #include "modules/RenderingServer3D.h"
 #include "modules/SceneTree.h"
@@ -31,6 +32,7 @@ private:
     MainApp* mainApp;
     std::vector<Window> windows;
     SceneTree sceneTree;
+    Event event;
     RenderingServer2D rendering_server_2d;
     RenderingServer3D rendering_server_3d;
 };
