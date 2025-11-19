@@ -19,7 +19,7 @@ public:
     virtual void Render() {}
     virtual void Bind() {}
 
-    void ValidateComponent() {
+    virtual void ValidateComponent() {
         SceneTree::Get().componentList.push_back(this);
     }
 

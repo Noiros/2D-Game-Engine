@@ -1,6 +1,7 @@
 ﻿#include "Runtime.h"
 #include "Engine.h"
 #include "GameObject.h"
+#include "components/MeshInstance3D.h"
 #include "components/Sprite2D.h"
 #include "utils/Logger.h"
 

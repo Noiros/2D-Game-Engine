@@ -21,6 +21,11 @@ void Engine::Initialize(MainApp* main_app) {
 
     Logger::Log("Initializing Scene Tree");
     SceneTree::SetInstance(&sceneTree);
+    Logger::Log("Initializing Rendering Server 2D");
+    RenderingServer2D::SetInstance(&rendering_server_2d);
+    rendering_server_2d.Initialize();
+    Logger::Log("Initializing Rendering Server 3D");
+    RenderingServer3D::SetInstance(&rendering_server_3d);
 
     Run();
 }
@@ -52,7 +57,9 @@ void Engine::MainLoop() {
         gameObject->Update(0.0f);
     }
 
-    for (Component* component : sceneTree.componentList) {
+    for (Component* component : sceneTree.component2DList) {
         component->Update(0.0f);
     }
+
+    rendering_server_2d.Render();
 }

@@ -19,5 +19,4 @@ void Editor::Ready() {
 void Editor::Update() {
     Logger::Log("Editor Update");
     editorInterface.Update();
-
 }

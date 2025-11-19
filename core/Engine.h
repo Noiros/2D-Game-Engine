@@ -1,9 +1,10 @@
 ﻿#pragma once
 #define EDITOR
-#include <memory>
 #include <vector>
 
 #include "MainApp.h"
+#include "modules/RenderingServer2D.h"
+#include "modules/RenderingServer3D.h"
 #include "modules/SceneTree.h"
 #include "modules/Window.h"
 
@@ -30,5 +31,7 @@ private:
     MainApp* mainApp;
     std::vector<Window> windows;
     SceneTree sceneTree;
+    RenderingServer2D rendering_server_2d;
+    RenderingServer3D rendering_server_3d;
 };
 
