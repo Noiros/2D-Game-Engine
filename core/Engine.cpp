@@ -1,104 +1,73 @@
 ﻿#include "Engine.h"
-#include "Logger.h"
 
-#include <Windows.h>
+#include <iostream>
 
-#include "modules/RenderingServerUI.h"
+#include "utils/Logger.h"
+#include "GameObject.h"
+#include <SDL3/SDL.h>
 
-#ifdef EDITOR
-#include "../editor/Editor.h"
-#endif
+#include "EventType.h"
+#include "modules/Event.h"
 
 Engine* Engine::s_instance = nullptr;
 
-Engine::Engine()
-{
-    Logger::Log("Engine constructor called");
-}
+void Engine::Initialize(MainApp* main_app) {
+    Logger::Log("Initializing Engine");
 
-Engine::~Engine()
-{
-    Logger::Log("Engine destructor called");
-    s_instance = nullptr;
-}
+    mainApp = main_app;
 
+    if (!SDL_Init(SDL_INIT_VIDEO)) {
+        Logger::Err(std::string("SDL_Init failed: ") + SDL_GetError());
+        return;
+    }
 
-void Engine::Setup()
-{
-    SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_TIME_CRITICAL);
-    
+    Logger::Log("Creating Window");
+    Window mainWindow = Window();
+    windows.push_back(mainWindow);
+
+    Logger::Log("Initializing Scene Tree");
     SceneTree::SetInstance(&sceneTree);
-    InputManager::SetInstance(&inputManager);
-    ResourcesManager::SetInstance(&resourcesManager);
-    RenderingServer2D::SetInstance(&renderingServer2D);
-    RenderingServerUI::SetInstance(&renderingServerUI);
-    PhysicsServer2D::SetInstance(&physicsServer2D);
+    Logger::Log("Initializing Rendering Server 2D");
+    RenderingServer2D::SetInstance(&rendering_server_2d);
+    rendering_server_2d.Initialize();
+    Logger::Log("Initializing Rendering Server 3D");
+    RenderingServer3D::SetInstance(&rendering_server_3d);
+    Logger::Log("Initializing Event");
+    Event::SetInstance(&event);
 
-    renderingServerUI.Initialize(renderingServer2D.window, renderingServer2D.renderer);
-    
-    isRunning = true;
-    Logger::Log("Engine setup done !");
+    Run();
 }
 
-void Engine::Run()
-{
-    while (isRunning)
-    {
-        Update();
-    }
-}
+void Engine::Run() {
+    Logger::Log("Running Engine");
 
-void Engine::Quit()
-{
-#ifdef EDITOR
-    Editor::Get().ShutdownEditorResources();
-    renderingServerUI.Shutdown();
-#endif
+    mainApp->Ready();
 
-    SDL_DestroyRenderer(renderingServer2D.renderer);
-    SDL_DestroyWindow(renderingServer2D.window);
-    SDL_Quit();
-    Logger::Log("SDL closed !");
-}
-
-void Engine::Update()
-{
-#ifdef CAP_FPS
-    uint64_t timeToWait = MILLISEC_PER_FRAME - (SDL_GetTicks64() - millisecondPreviousFrame);
-    if (timeToWait > 0 && timeToWait <= MILLISEC_PER_FRAME)
-        SDL_Delay(timeToWait); //yield to other processes
-#endif // CAP_FPS
-
-    SDL_Event sdlEvent;
-    while (SDL_PollEvent(&sdlEvent))
-    {
-        renderingServerUI.ProcessEvent(sdlEvent);
-        switch (sdlEvent.type)
-        {
-        case SDL_QUIT: isRunning = false;
-            break;
-        case SDL_KEYDOWN: if (sdlEvent.key.keysym.sym == SDLK_ESCAPE) isRunning = false;
-            break;
+    bool running = true;
+    while (running) {
+        SDL_Event e;
+        while (SDL_PollEvent(&e)) {
+            Event::Get().Publish(InputEvent{ e });
+            if (e.type == SDL_EVENT_QUIT) running = false;
         }
+
+        MainLoop();
     }
 
-    inputManager.ProcessInput();
+    SDL_Quit();
+}
 
-    float deltaTime = (SDL_GetTicks64() - millisecondPreviousFrame) / 1000.0f;
-    millisecondPreviousFrame = SDL_GetTicks64();
+void Engine::MainLoop() {
+    mainApp->Update();
 
-    renderingServer2D.Clear();
+    for (GameObject* gameObject : sceneTree.gameObjectList) {
+        gameObject->Update(0.0f);
+    }
 
-    uint64_t startUpdateMillis = SDL_GetTicks64();
-    sceneTree.Update(deltaTime);
-    millisUpdateFrame = SDL_GetTicks64() - startUpdateMillis;
+    for (Component* component : sceneTree.component2DList) {
+        component->Update(0.0f);
+    }
 
-    uint64_t startRenderMillis = SDL_GetTicks64();
-    
-    renderingServer2D.Render();
-    renderingServerUI.Render();
-    
-    millisRenderFrame = SDL_GetTicks64() - startRenderMillis;
+    //rendering_server_2d.Render();
 
-    millisFrame = SDL_GetTicks64() - millisecondPreviousFrame;
 }

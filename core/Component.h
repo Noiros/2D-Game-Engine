@@ -1,28 +1,27 @@
 ﻿#pragma once
-#include <functional>
-#include <SDL_render.h>
-#include <glm.hpp>
+#include <glm/glm.hpp>
 #include <map>
 #include <string_view>
 #include "./Proprety.h"
-#include "Logger.h"
 #include "Object.h"
+#include "modules/SceneTree.h"
 
 class GameObject;
 
 class Component : public Object
 {
 public:
-    Component() = default;
-    virtual ~Component() = default;
-
     GameObject* gameObject;
     int ZOrder = 0;
 
     virtual void Ready() {}
     virtual void Update(float deltaTime) {}
-    virtual void Render(SDL_Renderer* renderer, glm::vec2 cameraPos, float cameraScale) {}
+    virtual void Render() {}
     virtual void Bind() {}
+
+    virtual void ValidateComponent() {
+        SceneTree::Get().componentList.push_back(this);
+    }
 
     template<typename T>
     void BindProperty(std::string_view name, Proprety* prop, T* varPtr)
@@ -35,7 +34,7 @@ public:
     void SetProperty(std::string_view name, int value) { *static_cast<int*>(properties[name]->varPtr) = value; }
     void SetProperty(std::string_view name, float value) { *static_cast<float*>(properties[name]->varPtr) = value; }
     void SetProperty(std::string_view name, bool value) { *static_cast<bool*>(properties[name]->varPtr) = value; }
-    
+
     template<typename T>
     T GetProperty(std::string_view name)
     {

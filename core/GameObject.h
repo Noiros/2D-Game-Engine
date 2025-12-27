@@ -6,6 +6,7 @@
 #include "../../core/ECS.h"
 #include "../../core/Component.h"
 #include "components/Transform2D.h"
+#include "utils/Logger.h"
 
 class GameObject : public Object
 {
@@ -19,6 +20,8 @@ public:
     template<typename T, typename... TArgs>
     inline T& AddComponent(TArgs&&... args)
     {
+        Logger::Log("AddComponent");
+
         T* comp = new T(std::forward<TArgs>(args)...);
         std::unique_ptr<Component> uptr {comp};
         comp->gameObject = this;
@@ -26,6 +29,8 @@ public:
         components.emplace_back(std::move(uptr));
         compBitset[GetComponentTypeID<T>()] = true;
         compList[GetComponentTypeID<T>()] = comp;
+
+        comp->ValidateComponent();
         comp->Bind();
         comp->Ready();
         return *comp;
@@ -72,7 +77,7 @@ public:
     Transform2D* transform;
     virtual void Ready() {}
     virtual void Update(float deltaTime) {}
-    virtual void Render(SDL_Renderer* renderer, glm::vec2 cameraPos, float cameraScale) {}
+    virtual void Render() {}
     virtual void HitObject(GameObject* other) {}
     
     

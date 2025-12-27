@@ -1,16 +1,21 @@
 ﻿#include "Editor.h"
-#include <imgui.h>
-#include <SDL_render.h>
-#include "../game/Game.h"
 
-Editor* Editor::s_instance = nullptr;
+#include "Engine.h"
+#include "utils/Logger.h"
 
-void Editor::ShutdownEditorResources()
-{
-    viewport.Shutdown();
+Editor::Editor() {
+    auto* engine = new Engine();
+    Engine::SetInstance(engine);
+    engine->Initialize(this);
 }
 
-void Editor::RenderUI()
-{
-    viewport.RenderUI();
+void Editor::Ready() {
+    Logger::Log("Editor Ready");
+
+    editorInterface = InterfaceBackend();
+    editorInterface.InitializeInterface();
+}
+
+void Editor::Update() {
+    editorInterface.Update();
 }

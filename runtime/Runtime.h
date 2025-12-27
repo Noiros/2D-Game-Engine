@@ -1,12 +1,9 @@
 ﻿#pragma once
-#include "../core/Engine.h"
+#include "MainApp.h"
 
-class Runtime
-{
+class Runtime : public MainApp {
 public:
-    void Setup(Engine* _engine) { engine = _engine; }
-
-private:
-    Engine* engine;
-    
+    Runtime();
+    void Ready() override;
+    void Update() override;
 };

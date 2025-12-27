@@ -1,5 +1,4 @@
 ﻿#pragma once
-#include <string>
 
 enum PropretyType { Int, Float, String, Vector2, Bool };
 

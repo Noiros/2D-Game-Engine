@@ -6,6 +6,9 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  linux-build:
+  windows-editor:
     name: Windows - Editor
-    uses: ./.github/workflows/editor.yml
+    uses: ./.github/workflows/build-editor.yml
+  windows-runtime:
+    name: Windows - Runtime
+    uses: ./.github/workflows/build-runtime.yml
