@@ -1,5 +1,7 @@
 ﻿#pragma once
+#include "InterfaceBase.h"
 
-class InterfaceViewport {
+class InterfaceViewport : public InterfaceBase {
+
 
 };

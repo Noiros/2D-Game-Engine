@@ -38,6 +38,11 @@ void InterfaceBackend::Update() {
     ImGui_ImplSDL3_NewFrame();
     ImGui::NewFrame();
 
+    for (auto& interface : interfaces) {
+        interface->Update();
+        interface->Render();
+    }
+
     ImGui::ShowDemoWindow();
 
     ImGui::Render();
